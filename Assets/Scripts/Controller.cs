@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Controller : MonoBehaviour
 {
+
     public enum Bet { None, One = 1, Two = 2, Tree = 3, Four = 4, Five = 5, Six = 6, Seven = 7, Eight = 8, Nine = 9, Ten = 10 }
     public Bet bet;
     public GameObject wheel;
@@ -13,7 +14,10 @@ public class Controller : MonoBehaviour
     public Text CurrentCoinsText;
     public Text betH;
     public Image noCredits;
-    public double creditAmount = 10000;
+    public Image selectAmount;
+    public Text percentageText;
+    public Slider slider;
+    public int creditAmount = 10000;
     public int PreviousCoinsAmount;
     float[] winningAngles;
     float rotationTime;
@@ -21,19 +25,22 @@ public class Controller : MonoBehaviour
     float randomValue;
     int priceNumber;
     int bettingAmount;
-    int keepbetting;
+    public int keepbetting;
     bool wheelIsSpining;
-    //public int[] MultipleChance;
+    public int[] multipleChance;
 
     void Awake() 
     {
-        PreviousCoinsAmount = (int)creditAmount;
+        PreviousCoinsAmount = creditAmount;
         CurrentCoinsText.text = creditAmount.ToString();
         winningAngles = new float[] { 36, 72, 108, 144, 180, 216, 252, 288, 324, 360};
+        //multipleChance = new int[] {0, 1, 10, 100};
         betH.GetComponent<Text>();
         noCredits.GetComponent<Image>();
+        selectAmount.GetComponent<Image>();
         spinTrigger.GetComponent<Button>();
-        //MultipleChance = new int[] {0, 1, 10, 100};
+        percentageText.GetComponent<Text>();
+        slider.GetComponent<Slider>();
         //int customSeed = 1234;
         //Random.InitState(customSeed);
     }
@@ -106,13 +113,13 @@ public class Controller : MonoBehaviour
         ChanceForFirstSpin();
         Debug.Log("Spinning wheel number: " + priceNumber);
     }
-    int BetUpdate(int bettingAmount)
+    public int BetUpdate(int bettingAmount)
     {
         if (creditAmount > 0 && creditAmount >= bettingAmount)
         {
             if (wheelIsSpining)
             {
-                PreviousCoinsAmount = (int)creditAmount;
+                PreviousCoinsAmount = creditAmount;
                 creditAmount -= bettingAmount;
                 CurrentCoinsText.text = "-" + creditAmount;
     	        CurrentCoinsText.gameObject.SetActive (true);
@@ -124,6 +131,19 @@ public class Controller : MonoBehaviour
         keepbetting = bettingAmount;
         betH.text = "Bet: " + bettingAmount.ToString();
         return keepbetting;
+    }
+
+    public void PercentageUpdate(float value)
+    {   
+        percentageText.text = Mathf.RoundToInt(value) + "%";
+        value *= creditAmount / 100;
+        betH.text = "Bet: " + value.ToString();
+        keepbetting = Mathf.RoundToInt(value);
+        StartCoroutine(UpdateCoinsAmount());
+        if (creditAmount >= keepbetting)
+        {
+            noCredits.gameObject.SetActive(false);
+        }
     }
     void SetNoEnoughtCoinsToFalse()
     {
@@ -140,7 +160,7 @@ public class Controller : MonoBehaviour
         rotationTime = 0;
         while (rotationTime < 3)
         {
-            wheel.transform.Rotate(0, 0, 90f * speed * Time.deltaTime);
+            wheel.transform.Rotate(0, 0, 70f * speed * Time.deltaTime);
             rotationTime += Time.deltaTime;
             yield return null;
         }
@@ -195,28 +215,44 @@ public class Controller : MonoBehaviour
     	CurrentCoinsText.text = creditAmount.ToString();
         StartCoroutine(UpdateCoinsAmount());
     }
-    void ChanceForWiningSpin()
+    public int ChanceForWiningSpin()
     {
         int randomValueForPrice = Random.Range(0, 101);
         if(randomValueForPrice <= 80)
         {
-              RewardCoins(0);
+              RewardCoins(multipleChance[0]);
               Debug.Log("80% chance to multiple, number: " + randomValueForPrice);
+              return multipleChance[0];
         }
-        else if(randomValueForPrice > 80 && randomValueForPrice <= 90)
+        else if(randomValueForPrice > 80 && randomValueForPrice <= 88)
         {
-              RewardCoins(1);
-              Debug.Log("10% chance to multiple, number:" + randomValueForPrice);
+              RewardCoins(multipleChance[1]);
+              Debug.Log("8% chance to multiple, number:" + randomValueForPrice);
+              return multipleChance[1];
         }
-        else if(randomValueForPrice > 90 && randomValueForPrice <= 97)
+        else if(randomValueForPrice > 88 && randomValueForPrice <= 93)
         {
-              RewardCoins(10);
-              Debug.Log("7% chance to multiple, number: " + randomValueForPrice);
+              RewardCoins(multipleChance[2]);
+              Debug.Log("5% chance to multiple, number: " + randomValueForPrice);
+              return multipleChance[2];
+        }
+        else if (randomValueForPrice > 93 && randomValueForPrice <= 96)
+        {
+             RewardCoins(multipleChance[3]);
+             Debug.Log("3% chance to multiple, number: " + randomValueForPrice);
+             return multipleChance[3];
+        }
+        else if (randomValueForPrice > 96 && randomValueForPrice <= 99)
+        {
+            RewardCoins(multipleChance[4]);
+            Debug.Log("3% chance to multiple, number: " + randomValueForPrice);
+            return multipleChance[4];
         }
         else
         {
-             RewardCoins(100);
-             Debug.Log("1% chance to multiple, number: " + randomValueForPrice);
+            RewardCoins(multipleChance[5]);
+            Debug.Log("1% chance to multiple, number: " + randomValueForPrice);
+            return multipleChance[5];
         }
     }
     /*void RewardPrice()
@@ -322,12 +358,12 @@ public class Controller : MonoBehaviour
     	float elapsedTime = 0;
     
     	while (elapsedTime < seconds) {
-    	    CurrentCoinsText.text = Mathf.Floor(Mathf.Lerp (PreviousCoinsAmount, (int)creditAmount, (elapsedTime / seconds))).ToString ();
+    	    CurrentCoinsText.text = Mathf.Floor(Mathf.Lerp (PreviousCoinsAmount, creditAmount, (elapsedTime / seconds))).ToString ();
     	    elapsedTime += Time.deltaTime;
     
     	    yield return new WaitForEndOfFrame ();
         }
-    	PreviousCoinsAmount = (int)creditAmount;
+    	PreviousCoinsAmount = creditAmount;
     	CurrentCoinsText.text = creditAmount.ToString();
     } 
 }  
