@@ -28,7 +28,7 @@ public class CsvReadWrite : MonoBehaviour
         rowDataTemp[4] = "nasobok";
         rowData.Add(rowDataTemp);
 
-        for(int i = 0; i < 9999; i++)
+        for(int i = 0; i < 10000; i++)
         {
             wheelController.creditAmount -= wheelController.BetUpdate(100);
            int chance = wheelController.ChanceForWiningSpin();
@@ -40,7 +40,7 @@ public class CsvReadWrite : MonoBehaviour
             rowDataTemp[1] =  wheelController.creditAmount.ToString();
             rowDataTemp[2] =  bet.ToString();
             rowDataTemp[3] =  winAmount.ToString();
-            rowDataTemp[4] = chance.ToString();
+            rowDataTemp[4] =  chance.ToString();
             rowData.Add(rowDataTemp);
         }
 
