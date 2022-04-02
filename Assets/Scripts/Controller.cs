@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class Controller : MonoBehaviour
 {
-
     public enum Bet { None, One = 1, Two = 2, Tree = 3, Four = 4, Five = 5, Six = 6, Seven = 7, Eight = 8, Nine = 9, Ten = 10 }
     public Bet bet;
     public GameObject wheel;
@@ -18,7 +17,7 @@ public class Controller : MonoBehaviour
     public Text percentageText;
     public Slider slider;
     public int creditAmount = 10000;
-    public int PreviousCoinsAmount;
+    public int previousCoinsAmount;
     float[] winningAngles;
     float rotationTime;
     float speed = 10f;
@@ -31,7 +30,7 @@ public class Controller : MonoBehaviour
 
     void Awake() 
     {
-        PreviousCoinsAmount = creditAmount;
+        previousCoinsAmount = creditAmount;
         CurrentCoinsText.text = creditAmount.ToString();
         winningAngles = new float[] { 36, 72, 108, 144, 180, 216, 252, 288, 324, 360};
         //multipleChance = new int[] {0, 1, 10, 100};
@@ -119,7 +118,7 @@ public class Controller : MonoBehaviour
         {
             if (wheelIsSpining)
             {
-                PreviousCoinsAmount = creditAmount;
+                previousCoinsAmount = creditAmount;
                 creditAmount -= bettingAmount;
                 CurrentCoinsText.text = "-" + creditAmount;
     	        CurrentCoinsText.gameObject.SetActive (true);
@@ -135,8 +134,9 @@ public class Controller : MonoBehaviour
 
     public void PercentageUpdate(float value)
     {   
+
         percentageText.text = Mathf.RoundToInt(value) + "%";
-        value *= creditAmount / 100;
+        value *= creditAmount / 100f;
         betH.text = "Bet: " + value.ToString();
         keepbetting = Mathf.RoundToInt(value);
         StartCoroutine(UpdateCoinsAmount());
@@ -358,12 +358,12 @@ public class Controller : MonoBehaviour
     	float elapsedTime = 0;
     
     	while (elapsedTime < seconds) {
-    	    CurrentCoinsText.text = Mathf.Floor(Mathf.Lerp (PreviousCoinsAmount, creditAmount, (elapsedTime / seconds))).ToString ();
+    	    CurrentCoinsText.text = Mathf.Floor(Mathf.Lerp (previousCoinsAmount, creditAmount, (elapsedTime / seconds))).ToString ();
     	    elapsedTime += Time.deltaTime;
     
     	    yield return new WaitForEndOfFrame ();
         }
-    	PreviousCoinsAmount = creditAmount;
+    	previousCoinsAmount = creditAmount;
     	CurrentCoinsText.text = creditAmount.ToString();
     } 
 }  
