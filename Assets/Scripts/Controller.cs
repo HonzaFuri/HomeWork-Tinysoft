@@ -219,7 +219,7 @@ public class Controller : MonoBehaviour
     public int ChanceForWiningSpin()
     {
         int randomValueForPrice = Random.Range(0, 101);
-        if(randomValueForPrice <= 80)
+        if  (randomValueForPrice >= 0 && randomValueForPrice <= 80)
         {
               RewardCoins(multipleChance[0]);
               Debug.Log("80% chance to multiple, number: " + randomValueForPrice);

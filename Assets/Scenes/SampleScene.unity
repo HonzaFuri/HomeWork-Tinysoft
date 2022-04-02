@@ -2736,7 +2736,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1620181530}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8dd823656fad3dd41a7a8ebe87445a03, type: 3}
   m_Name: 
@@ -3901,7 +3901,7 @@ MonoBehaviour:
   percentageText: {fileID: 1620622500}
   slider: {fileID: 133289381}
   creditAmount: 10000
-  PreviousCoinsAmount: 0
+  previousCoinsAmount: 0
   keepbetting: 0
   multipleChance: 00000000010000000a000000190000003200000064000000
 --- !u!4 &1970912334
