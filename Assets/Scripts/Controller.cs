@@ -137,6 +137,7 @@ public class Controller : MonoBehaviour
 
         percentageText.text = Mathf.RoundToInt(value) + "%";
         value *= creditAmount / 100f;
+        value = (int)value;
         betH.text = "Bet: " + value.ToString();
         keepbetting = Mathf.RoundToInt(value);
         StartCoroutine(UpdateCoinsAmount());
